@@ -1,5 +1,5 @@
 import mysql.connector
-import dbconfig as cfg
+# import dbconfig as cfg
 
 # Create a Database Access Object Class
 class HardwareDAO:
