@@ -1,30 +1,48 @@
 import mysql.connector
-# import dbconfig as cfg
+import dbconfig as cfg
 
 # Create a Database Access Object Class
 class HardwareDAO:
-    db=""
-    # Initiate the connection
-    def __init__(self): 
-        self.db = mysql.connector.connect(
-        host=       cfg.mysql['host'],
-        user=       cfg.mysql['user'],
-        password=   cfg.mysql['password'],
-        database=   cfg.mysql['database']
-        )
     
-    # Create function for creating entries        
+    # Function to connect to the database with the local host config file.
+    def initconnectToDB(self):
+        db = mysql.connector.connect(
+        host        =   cfg.mysql['host'],
+        user        =   cfg.mysql['user'],
+        password    =   cfg.mysql['password'],
+        database    =   cfg.mysql['database'],
+        pool_name   =   'my_connection_pool',
+        pool_size   =   5
+        )
+        return db
+
+    def getConnection(self):
+        db = mysql.connector.connect(
+            pool_name = 'my_connection_pool',
+        )
+        return db
+
+    # Call the connection function
+    def __init__(self): 
+        db = self.initconnectToDB()
+        db.close()
+    
+    # Function for creating entries        
     def create(self, values):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = db.getCursor()
         sql="insert into BLANK (title,author, price) values (%s,%s,%s)"
         cursor.execute(sql, values)
 
         self.db.commit()
-        return cursor.lastrowid
+        lastrowID = cursor.lastrowid
+        db.close()
+        return lastrowID
 
     # Function for getting all entries from database
     def getAll(self):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = self.getCursor()
         sql="select * from BLANK"
         cursor.execute(sql)
         results = cursor.fetchall()
@@ -33,27 +51,34 @@ class HardwareDAO:
         for result in results:
             print(result)
             returnArray.append(self.convertToDictionary(result))
+        db.close()
         return returnArray
 
     # Function to search by Product ID
     def findByID(self, id):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = self.getCursor()
         sql="select * from BLANK where id = %s"
         values = (id,)
 
         cursor.execute(sql, values)
         result = cursor.fetchone()
-        return self.convertToDictionary(result)
+        product = self.convertToDictionary(result)
+        db.close()
+        return product
 
     # Function to update existing entries
     def update(self, values):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = self.getCursor()
         sql="update BLANK set title= %s,author=%s, price=%s  where id = %s"
         cursor.execute(sql, values)
         self.db.commit()
+        db.close()
     
     #Function to delete entries for DB
     def delete(self, id):
+        db = self.getConnection()
         cursor = self.db.cursor()
         sql="delete from BLANK where id = %s"
         values = (id,)
@@ -61,7 +86,7 @@ class HardwareDAO:
         cursor.execute(sql, values)
 
         self.db.commit()
-        print("delete done")
+        db.close()
 
     # Function to convert SQL array to Python dict
     def convertToDictionary(self, result):
