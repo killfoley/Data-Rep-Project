@@ -1,7 +1,8 @@
 #!flask/bin/python
 
 from flask import Flask, g, jsonify, request, abort, make_response, render_template, session, redirect, url_for
-from DAO import HardwareDAO
+
+from hardwareDAO import HardwareDAO
 import json
 
 
@@ -50,7 +51,7 @@ def login():
         user = [x for x in users if x.username == username][0]
         if user and user.password == password:
             session['user_id'] = user.id
-            return redirect(url_for('profile'))
+            return redirect(url_for('stock'))
 
         return redirect(url_for('login'))
 
@@ -64,7 +65,7 @@ def home():
     return render_template('home.html')
 
 # get all stock entries
-@app.route('/stockitem')
+@app.route('/stock')
 def getAll():
     if not 'username' in session:
         abort(401)
@@ -73,7 +74,7 @@ def getAll():
     return jsonify(results)
 
 # find by Id
-@app.route('/stockitem/<int:id>')
+@app.route('/stock/<int:id>')
 def findById(id):
     if not 'username' in session:
         abort(401)
@@ -88,7 +89,7 @@ def findById(id):
     return jsonify(stockResult)
 
 # Create new stock item
-@app.route('/stockitem', methods=['POST'])
+@app.route('/stock', methods=['POST'])
 def create():
     if not 'username' in session:
         abort(401)
@@ -123,7 +124,7 @@ def create():
 # curl -i -H "Content-Type:application/json" -X POST -d "{\"category\":\"Tier 2\",\"name\":\"Elwirka\",\"supplier\":\"Elwro\",\"price_eur\":30000.00}" http://localhost:5000/stockitem
 
 # App to update a stock item
-@app.route('/stockitem/<int:id>', methods=['PUT'])
+@app.route('/stock/<int:id>', methods=['PUT'])
 def update(id):
     if not 'username' in session:
         abort(401)
@@ -177,7 +178,7 @@ def update(id):
 
 # ---- delete ----
 
-@app.route('/stockitem/<int:id>', methods=['DELETE'])
+@app.route('/stock/<int:id>', methods=['DELETE'])
 def deleteStockItem(id):
     if not 'username' in session:
         abort(401)

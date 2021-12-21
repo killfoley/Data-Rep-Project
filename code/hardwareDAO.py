@@ -31,7 +31,14 @@ class HardwareDAO:
     def create(self, values):
         db = self.getConnection()
         cursor = db.getCursor()
-        sql="insert into BLANK (title,author, price) values (%s,%s,%s)"
+        sql='''
+                BEGIN;
+                Insert into Product (Id, Name, Manufacturer, Supplier, SafetyStock, CurrentStock)
+		            VALUES (default, %s, %s, %s, %s, %s);
+                Insert into Price (Id, CostPrice, SellPrice, ProductId)
+		            VALUES (%s, %s, %s, last_insert_id());
+                COMMIT; 
+            '''
         cursor.execute(sql, values)
 
         self.db.commit()
@@ -43,7 +50,7 @@ class HardwareDAO:
     def getAll(self):
         db = self.getConnection()
         cursor = self.getCursor()
-        sql="select * from BLANK"
+        sql="select * from Product A inner join Price B on A.Id = B.ProductId"
         cursor.execute(sql)
         results = cursor.fetchall()
         returnArray = []
@@ -90,7 +97,7 @@ class HardwareDAO:
 
     # Function to convert SQL array to Python dict
     def convertToDictionary(self, result):
-        colnames=['id','Title','Author', "Price"]
+        colnames=['Id', 'Name', 'Manufacturer', 'Supplier', 'SafetyStock', 'CurrentStock', 'Id', 'CostPrice', 'SellPrice', 'ProductId']
         item = {}
         
         if result:
