@@ -31,10 +31,24 @@ Foreign Key(ProductId) References Product(Id) ON UPDATE CASCADE ON DELETE SET NU
 -- Set the auto increment Price Id 
 alter table Price AUTO_INCREMENT=1001;
 
--- Insert a row into both tables
+-- Insert some rows into both tables
 BEGIN;
 Insert into Product (Id, Name, Manufacturer, Supplier, SafetyStock, CurrentStock)
 		VALUES (default, "Hammer", "Stanley", "Screwfix", 8, 15);
 Insert into Price (Id, CostPrice, SellPrice, ProductId)
 		VALUES (default, 9.50, 12.95, last_insert_id());
+COMMIT;
+
+BEGIN;
+Insert into Product (Id, Name, Manufacturer, Supplier, SafetyStock, CurrentStock)
+		VALUES (default, "Stanley Knife", "Stanley", "Screwfix", 5, 12);
+Insert into Price (Id, CostPrice, SellPrice, ProductId)
+		VALUES (default, 4.75, 6.50, last_insert_id());
+COMMIT;
+
+BEGIN;
+Insert into Product (Id, Name, Manufacturer, Supplier, SafetyStock, CurrentStock)
+		VALUES (default, "DeWalt 18V Cordless Drill", "DeWalt", "Screwfix", 5, 8);
+Insert into Price (Id, CostPrice, SellPrice, ProductId)
+		VALUES (default, 85.95, 120.95, last_insert_id());
 COMMIT;
