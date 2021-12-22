@@ -65,20 +65,30 @@ class HardwareDAO:
     def findByID(self, id):
         db = self.getConnection()
         cursor = self.getCursor()
-        sql="select * from BLANK where id = %s"
-        values = (id,)
+        sql="select * from Product A inner join Price B on A.Id = B.ProductId where A.Id = %s"
+        values = (id)
 
         cursor.execute(sql, values)
         result = cursor.fetchone()
-        product = self.convertToDictionary(result)
+        find_product = self.convertToDictionary(result)
         db.close()
-        return product
+        return find_product
 
     # Function to update existing entries
-    def update(self, values):
+    def update(self, product):
         db = self.getConnection()
         cursor = self.getCursor()
-        sql="update BLANK set title= %s,author=%s, price=%s  where id = %s"
+        sql='''
+        UPDATE Product A, Price B
+        SET A.Name = %s, A.Manufacturer = %s, A.Supplier = %s, A.SafetyStock = %s, A.CurrentStock = %s,
+        B.CostPrice = %s, B.SellPrice = %s
+        where A.Id = B.ProductId AND A.Id = %s;
+        update BLANK set title= %s,author=%s, price=%s  where id = %s
+        
+        '''
+        values = [product['name'], product['manufacturer'], product['supplier'],
+                product['safetystock'], product['currentstock'], product['costprice'],
+                product['sellprice']]
         cursor.execute(sql, values)
         self.db.commit()
         db.close()
@@ -87,8 +97,8 @@ class HardwareDAO:
     def delete(self, id):
         db = self.getConnection()
         cursor = self.db.cursor()
-        sql="delete from BLANK where id = %s"
-        values = (id,)
+        sql= "delete from Product where id = %s"
+        values = (id)
 
         cursor.execute(sql, values)
 
