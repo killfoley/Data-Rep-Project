@@ -3,29 +3,36 @@ import dbconfig as cfg
 
 # Create a Database Access Object Class
 class HardwareDAO:
-    
-    # Function to connect to the database with the local host config file.
-    def initconnectToDB(self):
-        db = mysql.connector.connect(
-        host        =   cfg.mysql['host'],
-        user        =   cfg.mysql['user'],
-        password    =   cfg.mysql['password'],
-        database    =   cfg.mysql['database'],
-        pool_name   =   'my_connection_pool',
-        pool_size   =   5
-        )
-        return db
-
-    def getConnection(self):
-        db = mysql.connector.connect(
-            pool_name = 'my_connection_pool',
-        )
-        return db
+    db = ""
 
     # Call the connection function
     def __init__(self): 
-        db = self.initconnectToDB()
-        db.close()
+        self.db = self.initconnectToDB()
+        self.db.close()
+    
+    # Function to connect to the database with the local host config file.
+    def initconnectToDB(self):
+        self.db = mysql.connector.connect(
+            host=cfg.mysql['host'],
+            user=cfg.mysql['username'],
+            password=cfg.mysql['password'],
+            database=cfg.mysql['database'],
+            pool_name='my_connection_pool',
+            pool_size=5
+        )
+        return self.db
+
+    def getConnection(self):
+        self.db = mysql.connector.connect(
+            pool_name = 'my_connection_pool',
+        )
+        return self.db
+
+    def getCursor(self):
+        if not self.db.is_connected():
+            self.connectToDB()
+        return self.db.cursor()
+
     
     # Function for creating entries        
     def create(self, values):
@@ -33,9 +40,9 @@ class HardwareDAO:
         cursor = db.getCursor()
         sql='''
                 BEGIN;
-                Insert into Product (Id, Name, Manufacturer, Supplier, SafetyStock, CurrentStock)
+                Insert into Product (ProdId, Name, Manufacturer, Supplier, SafetyStock, CurrentStock)
 		            VALUES (default, %s, %s, %s, %s, %s);
-                Insert into Price (Id, CostPrice, SellPrice, ProductId)
+                Insert into Price (PriceId, CostPrice, SellPrice, ProductId)
 		            VALUES (%s, %s, %s, last_insert_id());
                 COMMIT; 
             '''
@@ -50,13 +57,13 @@ class HardwareDAO:
     def getAll(self):
         db = self.getConnection()
         cursor = self.getCursor()
-        sql="select * from Product A inner join Price B on A.Id = B.ProductId"
+        sql="select * from Product A inner join Price B on A.ProdId = B.ProductId"
         cursor.execute(sql)
         results = cursor.fetchall()
         returnArray = []
-        print(results)
+        #print(results)
         for result in results:
-            print(result)
+            #print(result)
             returnArray.append(self.convertToDictionary(result))
         db.close()
         return returnArray
@@ -65,8 +72,8 @@ class HardwareDAO:
     def findByID(self, id):
         db = self.getConnection()
         cursor = self.getCursor()
-        sql="select * from Product A inner join Price B on A.Id = B.ProductId where A.Id = %s"
-        values = (id)
+        sql="select * from Product A inner join Price B on A.ProdId = B.ProductId where A.ProdId = %s"
+        values = (id,)
 
         cursor.execute(sql, values)
         result = cursor.fetchone()
@@ -82,9 +89,7 @@ class HardwareDAO:
         UPDATE Product A, Price B
         SET A.Name = %s, A.Manufacturer = %s, A.Supplier = %s, A.SafetyStock = %s, A.CurrentStock = %s,
         B.CostPrice = %s, B.SellPrice = %s
-        where A.Id = B.ProductId AND A.Id = %s;
-        update BLANK set title= %s,author=%s, price=%s  where id = %s
-        
+        where A.ProdId = B.ProductId AND A.ProdId = %s;     
         '''
         values = [product['name'], product['manufacturer'], product['supplier'],
                 product['safetystock'], product['currentstock'], product['costprice'],
@@ -97,8 +102,8 @@ class HardwareDAO:
     def delete(self, id):
         db = self.getConnection()
         cursor = self.db.cursor()
-        sql= "delete from Product where id = %s"
-        values = (id)
+        sql= "delete from Product where ProdId = %s"
+        values = (id,)
 
         cursor.execute(sql, values)
 
@@ -107,7 +112,7 @@ class HardwareDAO:
 
     # Function to convert SQL array to Python dict
     def convertToDictionary(self, result):
-        colnames=['Id', 'Name', 'Manufacturer', 'Supplier', 'SafetyStock', 'CurrentStock', 'Id', 'CostPrice', 'SellPrice', 'ProductId']
+        colnames=['ProdId', 'Name', 'Manufacturer', 'Supplier', 'SafetyStock', 'CurrentStock', 'PriceId', 'CostPrice', 'SellPrice', 'ProductId']
         item = {}
         
         if result:
