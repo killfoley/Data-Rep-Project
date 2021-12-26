@@ -4,7 +4,16 @@ from flask import Flask, g, jsonify, request, abort, make_response, render_templ
 
 from hardwareDAO import HardwareDAO
 import json
+from decimal import Decimal
 
+#https://stackoverflow.com/questions/63278737/object-of-type-decimal-is-not-json-serializable
+# convert python 'Decimal' format for output in json. call with json.dumps()
+
+class DecimalEncoder(json.JSONEncoder):
+  def default(self, obj):
+    if isinstance(obj, Decimal):
+      return str(obj)
+    return json.JSONEncoder.default(self, obj)
 
 # initiate the Flask server
 app = Flask(__name__, static_url_path='', static_folder='.')
@@ -67,17 +76,18 @@ def home():
 # get all stock entries
 @app.route('/stock')
 def getAll():
-    if not 'username' in session:
-        abort(401)
+    #if not 'username' in session:
+    #    abort(401)
 
     results = HardwareDAO.getAll()
     return jsonify(results)
+# curl 
 
 # find by Id
 @app.route('/stock/<int:id>')
 def findById(id):
-    if not 'username' in session:
-        abort(401)
+    #if not 'username' in session:
+    #    abort(401)
 
     stockResult = HardwareDAO.findByID(id)
 
@@ -86,7 +96,7 @@ def findById(id):
         return "Cannot find that product in the database"
         abort(404)
 
-    return jsonify(stockResult)
+    return json.dumps(stockResult, cls=DecimalEncoder)
 
 # Create new stock item
 @app.route('/stock', methods=['POST'])
@@ -100,31 +110,31 @@ def create():
         abort(400)
 
     product = {
-        "Name": request.json['name'],
-        "Manufacturer": request.json['manufacturer'],
-        "Supplier": request.json['supplier'],
-        "SafetyStock": request.json['safety_stock'],
-        "CurrentStock": request.json['current_stock'],
-        "CostPrice" : request.json['cost_price'],
-        "SellPrice" : request.json['sell_price']
+        "name": request.json['name'],
+        "manufacturer": request.json['manufacturer'],
+        "supplier": request.json['supplier'],
+        "safetystock": request.json['safety_stock'],
+        "currentstock": request.json['current_stock'],
+        "costprice" : request.json['cost_price'],
+        "sellprice" : request.json['sell_price']
     }
     # create values for insert into db
     values = (product['name'], product['manufacturer'],
-              product['supplier'], product['price_eur'], 
-              product['current_stock'],product['cost_price'],
-              product['sell_price'])
+              product['supplier'], product['safetystock'], 
+              product['currentstock'],product['costprice'],
+              product['sellprice'])
     newId = HardwareDAO.create(values)
-    product['id'] = newId
+    product['ProdId'] = newId
     return jsonify(product)
 
 
 # sample test
-# curl -i -H "Content-Type:application/json" -X POST -d '{"name":"Tier 2","name":"Elwirka","supplier":"Elwro","price_eur":30000.00}' http://localhost:5000/stockitem
+# curl -i -H "Content-Type:application/json" -X POST -d '{"name":"Pliers 3 piece","manufacturer":"Magnusson","supplier":"Screwfix","safetystock":5, "currentstock":8, "costprice":12.50, "sellprice":16.45}' http://localhost:5000/stock
 # for windows use this one
-# curl -i -H "Content-Type:application/json" -X POST -d "{\"category\":\"Tier 2\",\"name\":\"Elwirka\",\"supplier\":\"Elwro\",\"price_eur\":30000.00}" http://localhost:5000/stockitem
+# curl -i -H "Content-Type:application/json" -X POST -d '{\"name\":\"Pliers 3 piece\",\"manufacturer\":\"Magnusson\",\"supplier\":\"Screwfix\",\"safetystock\":5, \"currentstock\":8, \"costprice\":12.50, \"sellprice\":16.45}' http://localhost:5000/stock
 
 # App to update a stock item
-@app.route('/stock/<int:id>', methods=['PUT'])
+@app.route('/stock/<int:ProdId>', methods=['PUT'])
 def update(id):
     if not 'username' in session:
         abort(401)
@@ -149,22 +159,22 @@ def update(id):
         return "Data type is incorrect. Please provide decimal value for price"
 
     if 'name' in request.json:
-        returnedProduct['name'] = reqJson['name']
-    if 'manufacture' in request.json:
-        returnedProduct['manufacturer'] = reqJson['manufacturer']
+        returnedProduct['Name'] = reqJson['name']
+    if 'manufacturer' in request.json:
+        returnedProduct['Manufacturer'] = reqJson['manufacturer']
     if 'supplier' in request.json:
-        returnedProduct['supplier'] = reqJson['supplier']
+        returnedProduct['Supplier'] = reqJson['supplier']
     if 'safety_stock' in request.json:
-        returnedProduct['safety_stock'] = reqJson['safety_stock']
-    if 'current_stock' in request.json:
-        returnedProduct['current_stock'] = reqJson['current_stock']
+        returnedProduct['SafetyStock'] = reqJson['safety_stock']
+    if 'CurrentStock' in request.json:
+        returnedProduct['CurrentStock'] = reqJson['CurrentStock']
     
 
     # Make the tuple for DB
-    values = (returnedProduct['name'], returnedProduct['manufacturer'],
-              returnedProduct['supplier'], returnedProduct['price_eur'], 
-              returnedProduct['current_stock'],returnedProduct['cost_price'],
-              returnedProduct['sell_price'])
+    values = (returnedProduct['Name'], returnedProduct['Manufacturer'],
+              returnedProduct['Supplier'], returnedProduct['SafetyStock'], 
+              returnedProduct['CurrentStock'],returnedProduct['CostPrice'],
+              returnedProduct['SellPrice'], returnedProduct['ProdId'])
     # Do the update on DB
     HardwareDAO.update(values)
 
@@ -191,7 +201,6 @@ def deleteStockItem(id):
     return jsonify({"done": True})
 
 
-
 # Getting static pages
 @app.route('/about')
 def about():
@@ -211,4 +220,4 @@ def not_found400(error):
 
 
 if __name__ == '__main__':
-    app.run(debug=False) # set for production
+    app.run(debug=True) # set for testing
