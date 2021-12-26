@@ -1,5 +1,6 @@
 import mysql.connector
 import dbconfig as cfg
+from decimal import Decimal
 
 # Create a Database Access Object Class
 class HardwareDAO:
@@ -37,21 +38,23 @@ class HardwareDAO:
     # Function for creating entries        
     def create(self, values):
         db = self.getConnection()
-        cursor = db.getCursor()
-        sql='''
-                BEGIN;
-                Insert into Product (ProdId, Name, Manufacturer, Supplier, SafetyStock, CurrentStock)
-		            VALUES (default, %s, %s, %s, %s, %s);
-                Insert into Price (PriceId, CostPrice, SellPrice, ProductId)
-		            VALUES (%s, %s, %s, last_insert_id());
-                COMMIT; 
-            '''
-        cursor.execute(sql, values)
-
+        cursor = self.getCursor()
+        sql=    ('BEGIN;'
+                'Insert into Product (Name, Manufacturer, Supplier, SafetyStock, CurrentStock)'
+		        'VALUES (%s, %s, %s, %s, %s);'
+                'Insert into Price (CostPrice, SellPrice, ProductId)'
+		        'VALUES (%s, %s, last_insert_id());'
+                'COMMIT;')
+        #values = ("Test", "Test", "Test", 9, 9, 2.50, 3.50)
+        
+        for result in cursor.execute(sql,values, multi=True):
+            pass
+        
         self.db.commit()
-        lastrowID = cursor.lastrowid
+        cursor.execute("select max(ProdId) from Product;")
+        ProdId = cursor.fetchone()
         db.close()
-        return lastrowID
+        return ProdId
 
     # Function for getting all entries from database
     def getAll(self):
@@ -59,12 +62,16 @@ class HardwareDAO:
         cursor = self.getCursor()
         sql="select * from Product A inner join Price B on A.ProdId = B.ProductId"
         cursor.execute(sql)
-        results = cursor.fetchall()
+        db_results = cursor.fetchall()
+        # https://stackoverflow.com/questions/40802371/how-to-remove-decimal-from-the-query-result/40802526
+        # convert to string items using list comprehension
+        results = [tuple(str(item) for item in t) for t in db_results]
         returnArray = []
         #print(results)
         for result in results:
             #print(result)
             returnArray.append(self.convertToDictionary(result))
+
         db.close()
         return returnArray
 
@@ -72,7 +79,7 @@ class HardwareDAO:
     def findByID(self, id):
         db = self.getConnection()
         cursor = self.getCursor()
-        sql="select * from Product A inner join Price B on A.ProdId = B.ProductId where A.ProdId = %s"
+        sql="select * from Product A inner join Price B on A.ProdId = B.ProductId where A.ProdId = %s;"
         values = (id,)
 
         cursor.execute(sql, values)
@@ -91,9 +98,9 @@ class HardwareDAO:
         B.CostPrice = %s, B.SellPrice = %s
         where A.ProdId = B.ProductId AND A.ProdId = %s;     
         '''
-        values = [product['name'], product['manufacturer'], product['supplier'],
-                product['safetystock'], product['currentstock'], product['costprice'],
-                product['sellprice']]
+        values = [product['Name'], product['Manufacturer'], product['Supplier'],
+                product['SafetyStock'], product['CurrentStock'], product['CostPrice'],
+                product['SellPrice'], product['ProdId']]
         cursor.execute(sql, values)
         self.db.commit()
         db.close()
@@ -102,7 +109,7 @@ class HardwareDAO:
     def delete(self, id):
         db = self.getConnection()
         cursor = self.db.cursor()
-        sql= "delete from Product where ProdId = %s"
+        sql= "delete from Product where ProdId = %s;"
         values = (id,)
 
         cursor.execute(sql, values)
