@@ -89,7 +89,7 @@ class HardwareDAO:
         return find_product
 
     # Function to update existing entries
-    def update(self, product):
+    def update(self, values):
         db = self.getConnection()
         cursor = self.getCursor()
         sql='''
@@ -98,9 +98,9 @@ class HardwareDAO:
         B.CostPrice = %s, B.SellPrice = %s
         where A.ProdId = B.ProductId AND A.ProdId = %s;     
         '''
-        values = [product['Name'], product['Manufacturer'], product['Supplier'],
-                product['SafetyStock'], product['CurrentStock'], product['CostPrice'],
-                product['SellPrice'], product['ProdId']]
+        #values = [Product['Name'], product['Manufacturer'], product['Supplier'],
+        #        product['SafetyStock'], product['CurrentStock'], product['CostPrice'],
+        #        product['SellPrice'], product['ProdId']]
         cursor.execute(sql, values)
         self.db.commit()
         db.close()

@@ -66,6 +66,7 @@ def login():
 
     return render_template('login.html')
 
+# App for home redirect
 @app.route('/home')
 def home():
     if not g.user:
@@ -73,7 +74,9 @@ def home():
 
     return render_template('home.html')
 
+
 # get all stock entries
+# curl http://127.0.0.1:5000/stock
 @app.route('/stock')
 def getAll():
     #if not 'username' in session:
@@ -83,7 +86,9 @@ def getAll():
     return jsonify(results)
 # curl 
 
+
 # find by Id
+# curl http://127.0.0.1:5000/stock/3
 @app.route('/stock/<int:id>')
 def findById(id):
     #if not 'username' in session:
@@ -93,30 +98,35 @@ def findById(id):
 
     # Check if id exists
     if not stockResult:
-        return "Cannot find that product in the database"
+        return "Cannot find that product in the database\n"
         abort(404)
+    stockResult = json.dumps(stockResult, cls=DecimalEncoder)
+    return json.loads(stockResult)
 
-    return json.dumps(stockResult, cls=DecimalEncoder)
 
 # Create new stock item
+# for Mac
+# curl -i -H "Content-Type:application/json" -X POST -d '{"name":"Pliers 3 piece","manufacturer":"Magnusson","supplier":"Screwfix","safetystock":5, "currentstock":8, "costprice":12.50, "sellprice":16.45}' http://localhost:5000/stock
+# for Windows
+# curl -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"Pliers 3 piece\",\"manufacturer\":\"Magnusson\",\"supplier\":\"Screwfix\",\"safetystock\":5, \"currentstock\":8, \"costprice\":12.50, \"sellprice\":16.45}" http://localhost:5000/stock
 @app.route('/stock', methods=['POST'])
 def create():
-    if not 'username' in session:
-        abort(401)
+    #if not 'username' in session:
+    #    abort(401)
 
     # check if exist
-    if not request.json:
-        return "Wrong request"
-        abort(400)
+    #if not request.json:
+    #    return "Wrong request\n"
+    #    abort(400)
 
     product = {
         "name": request.json['name'],
         "manufacturer": request.json['manufacturer'],
         "supplier": request.json['supplier'],
-        "safetystock": request.json['safety_stock'],
-        "currentstock": request.json['current_stock'],
-        "costprice" : request.json['cost_price'],
-        "sellprice" : request.json['sell_price']
+        "safetystock": request.json['safetystock'],
+        "currentstock": request.json['currentstock'],
+        "costprice" : request.json['costprice'],
+        "sellprice" : request.json['sellprice']
     }
     # create values for insert into db
     values = (product['name'], product['manufacturer'],
@@ -128,35 +138,39 @@ def create():
     return jsonify(product)
 
 
-# sample test
-# curl -i -H "Content-Type:application/json" -X POST -d '{"name":"Pliers 3 piece","manufacturer":"Magnusson","supplier":"Screwfix","safetystock":5, "currentstock":8, "costprice":12.50, "sellprice":16.45}' http://localhost:5000/stock
-# for windows use this one
-# curl -i -H "Content-Type:application/json" -X POST -d '{\"name\":\"Pliers 3 piece\",\"manufacturer\":\"Magnusson\",\"supplier\":\"Screwfix\",\"safetystock\":5, \"currentstock\":8, \"costprice\":12.50, \"sellprice\":16.45}' http://localhost:5000/stock
-
 # App to update a stock item
-@app.route('/stock/<int:ProdId>', methods=['PUT'])
+# for Mac
+# curl -i -H "Content-Type:application/json" -X PUT -d '{"name":"M8x25mm countersunk screw 50 pack","manufacturer":"Easyfix","supplier":"Screwfix","safetystock":50, "currentstock":80, "costprice":6.00, "sellprice":8.95, "ProdId":4}' http://localhost:5000/stock/4
+# for Windows
+# curl -i -H "Content-Type:application/json" -X PUT -d "{\"name\":\"M8x25mm countersunk screw 50 pack\",\"manufacturer\":\"Easyfix\",\"supplier\":\"Screwfix\",\"safetystock\":50, \"currentstock\":80, \"costprice\":6.00, \"sellprice\":8.95, \"ProdId\":4}" http://localhost:5000/stock/4
+@app.route('/stock/<int:id>', methods=['PUT'])
 def update(id):
-    if not 'username' in session:
-        abort(401)
+    #if not 'username' in session:
+    #    abort(401)
 
     returnedProduct = HardwareDAO.findByID(id)
+    # Convert to string object to get rid of Python Decimal object
+    returnedProduct = json.dumps(returnedProduct, cls=DecimalEncoder)
+    # Convert back to JSON
+    returnedProduct = json.loads(returnedProduct)
 
     if not returnedProduct:
-        return "That id does not exist in the database"
+        return "That id does not exist in the database\n"
         abort(404)
+    '''
     if not request.json:
-        return "Request Error"
+        return "Request Error\n"
         abort(400)
 
     reqJson = request.json
 
     # checks for data integrity
-    if ('cost_price' in reqJson) and (type(reqJson['cost_price']) is not float):
+    if ('costprice' in reqJson) and (type(reqJson['costprice']) is not float):
         abort(400)
-        return "Data type is incorrect. Please provide decimal value for price"
-    if ('sell_price' in reqJson) and (type(reqJson['sell_price']) is not float):
+        return "Data type is incorrect. Please provide decimal value for price\n"
+    if ('sellprice' in reqJson) and (type(reqJson['sellprice']) is not float):
         abort(400)
-        return "Data type is incorrect. Please provide decimal value for price"
+        return "Data type is incorrect. Please provide decimal value for price\n"
 
     if 'name' in request.json:
         returnedProduct['Name'] = reqJson['name']
@@ -168,34 +182,30 @@ def update(id):
         returnedProduct['SafetyStock'] = reqJson['safety_stock']
     if 'CurrentStock' in request.json:
         returnedProduct['CurrentStock'] = reqJson['CurrentStock']
-    
+    '''
 
     # Make the tuple for DB
-    values = (returnedProduct['Name'], returnedProduct['Manufacturer'],
-              returnedProduct['Supplier'], returnedProduct['SafetyStock'], 
-              returnedProduct['CurrentStock'],returnedProduct['CostPrice'],
-              returnedProduct['SellPrice'], returnedProduct['ProdId'])
+    values = (returnedProduct["Name"],returnedProduct["Manufacturer"],
+              returnedProduct["Supplier"], returnedProduct["SafetyStock"], 
+              returnedProduct["CurrentStock"],returnedProduct["CostPrice"],
+              returnedProduct["SellPrice"], returnedProduct["ProdId"])
     # Do the update on DB
     HardwareDAO.update(values)
 
     return jsonify(returnedProduct)
 
-# for Linux
-# curl -i -H "Content-Type:application/json" -X PUT -d '{"name":"Odra"}' http://localhost:5000/product/5
-# for Windows use this one
-# curl -i -H "Content-Type:application/json" -X PUT -d "{\"name\":\"Odra\"}" http://localhost:5000/productm/5
 
 
-# ---- delete ----
-
+# Delete
+# curl -
 @app.route('/stock/<int:id>', methods=['DELETE'])
 def deleteStockItem(id):
-    if not 'username' in session:
-        abort(401)
+    #if not 'username' in session:
+    #    abort(401)
 
     returnedProduct = HardwareDAO.findByID(id)
     if not returnedProduct:
-        return "That id does not exist in the database"
+        return "That id does not exist in the database\n"
         abort(404)
     HardwareDAO.delete(id)
     return jsonify({"done": True})
