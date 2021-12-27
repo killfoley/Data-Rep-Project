@@ -112,13 +112,13 @@ def findById(id):
 # curl -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"Pliers 3 piece\",\"manufacturer\":\"Magnusson\",\"supplier\":\"Screwfix\",\"safetystock\":5, \"currentstock\":8, \"costprice\":12.50, \"sellprice\":16.45}" http://localhost:5000/stock
 @app.route('/stock', methods=['POST'])
 def create():
-    #if not 'username' in session:
-    #    abort(401)
+    if not 'username' in session:
+        abort(401)
 
-    # check if exist
-    #if not request.json:
-    #    return "Wrong request\n"
-    #    abort(400)
+    # check if exists
+    if not request.json:
+        return "Wrong request\n"
+        abort(400)
 
     product = {
         "name": request.json['name'],
@@ -146,8 +146,8 @@ def create():
 # curl -i -H "Content-Type:application/json" -X PUT -d "{\"name\":\"M8x25mm countersunk screw 50 pack\",\"manufacturer\":\"Easyfix\",\"supplier\":\"Screwfix\",\"safetystock\":50, \"currentstock\":80, \"costprice\":6.00, \"sellprice\":8.95, \"ProdId\":4}" http://localhost:5000/stock/4
 @app.route('/stock/<int:id>', methods=['PUT'])
 def update(id):
-    #if not 'username' in session:
-    #    abort(401)
+    if not 'username' in session:
+        abort(401)
 
     returnedProduct = HardwareDAO.findByID(id)
     # Convert to string object to get rid of Python Decimal object
@@ -158,7 +158,7 @@ def update(id):
     if not returnedProduct:
         return "That id does not exist in the database\n"
         abort(404)
-    '''
+    
     if not request.json:
         return "Request Error\n"
         abort(400)
@@ -183,7 +183,6 @@ def update(id):
         returnedProduct['SafetyStock'] = reqJson['safety_stock']
     if 'CurrentStock' in request.json:
         returnedProduct['CurrentStock'] = reqJson['CurrentStock']
-    '''
 
     # Make the tuple for DB
     values = (returnedProduct["Name"],returnedProduct["Manufacturer"],
@@ -194,8 +193,6 @@ def update(id):
     HardwareDAO.update(values)
 
     return jsonify(returnedProduct)
-
-
 
 # Delete
 # curl -
