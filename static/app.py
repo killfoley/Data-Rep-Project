@@ -17,6 +17,8 @@ class DecimalEncoder(json.JSONEncoder):
 
 # initiate the Flask server
 app = Flask(__name__, static_url_path='', static_folder='.')
+# unsort json. Remove for using with browser.
+app.config['JSON_SORT_KEYS'] = False
 app.secret_key = 'MySeCrEtKeY987123'
 
 # How to create a simple Flask login @ https://youtu.be/2Zz97NVbH0U
@@ -84,7 +86,6 @@ def getAll():
 
     results = HardwareDAO.getAll()
     return jsonify(results)
-# curl 
 
 
 # find by Id
