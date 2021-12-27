@@ -16,9 +16,9 @@ class DecimalEncoder(json.JSONEncoder):
     return json.JSONEncoder.default(self, obj)
 
 # initiate the Flask server
-app = Flask(__name__, static_url_path='', static_folder='.')
+app = Flask(__name__, static_url_path='', static_folder='staticpages')
 # unsort json. Remove for using with browser.
-app.config['JSON_SORT_KEYS'] = False
+# app.config['JSON_SORT_KEYS'] = False
 app.secret_key = 'MySeCrEtKeY987123'
 
 # How to create a simple Flask login @ https://youtu.be/2Zz97NVbH0U
@@ -62,19 +62,19 @@ def login():
         user = [x for x in users if x.username == username][0]
         if user and user.password == password:
             session['user_id'] = user.id
-            return redirect(url_for('stock'))
+            return redirect(url_for('inventory'))
 
         return redirect(url_for('login'))
 
     return render_template('login.html')
 
 # App for home redirect
-@app.route('/home')
+@app.route('/inventory')
 def home():
     if not g.user:
         return redirect(url_for('login'))
 
-    return render_template('home.html')
+    return render_template('inventory.html')
 
 
 # get all stock entries
