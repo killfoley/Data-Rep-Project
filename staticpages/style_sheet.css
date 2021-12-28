@@ -1,0 +1,250 @@
+* {font-family: Arial, Helvetica, sans-serif;}
+
+/* Set a style for header */
+.header {
+  margin-left: -8px;
+  margin-right: -8px;
+  margin-top: -8px;
+  padding: 5px;
+  text-align: center;
+  background: #3298dc;
+  color: white;
+  font-size: 16px;
+}
+
+/* Set a style for header inventory.html*/
+.headerinventory {
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 0px;
+  margin-bottom: 8px;
+  padding: 5px;
+  text-align: center;
+  background: #3298dc;
+  color: white;
+  font-size: 16px;
+}
+
+/* Set a style for button style create button text inventory.html */
+.createbuttontext{
+  margin-top: 20px;
+  margin-left: 20px;
+}
+/* button group inventory page*/
+.btn-group-inv button{
+  margin-top: 1px;
+  background-color: #dc3265; 
+  border: 1px solid black; 
+  border-radius: 4px;
+  font-size: 16px;
+  color: black; 
+  padding: 2px 2px; 
+  cursor: pointer; 
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+/* Set a style for create button style create button inventory.html */
+.createbutton{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #dc3265;
+  color: black;
+  padding: 12px;
+  margin-top: 10px;
+  margin-left: 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+/* Set a style for home button style create button inventory.html */
+#homebutton{
+  margin-top: -30px;
+}
+
+#stockTable {
+  margin-left: 10px;
+  margin-right: 5px;
+}
+
+/* style and positioning for logo */
+.logo{
+  position: absolute;
+  top: 8px;
+  left: 6px;
+}
+
+/* Bordered form on login_page.html */
+div.loginform
+{
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+.form
+{
+    text-align: center;
+    display: inline-block;
+    width: 300px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
+/* Full-width inputs */
+input[type=email], input[type=password] {
+  width: 100%;
+  padding: 12px 12px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #d3d3d3;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+
+/* Add a hover effect for buttons */
+button:hover {
+  opacity: 0.8;
+}
+
+/* Set a style for login button */
+.log-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #dc3265;
+  color: white;
+  padding: 12px;
+  margin-top: 30px;
+  margin-left: 30px;
+  border: none;
+  cursor: pointer;
+  width: 80%;
+  border-radius: 5px;
+}
+
+
+
+/* Regular body style*/
+body {
+    background-color: white;
+    color: black;
+    margin-bottom: 50px;
+}
+/* Dark mode body style*/
+.dark-mode {
+    background-color: black;
+    color: white;
+}
+h2{
+  text-align: center;
+}
+
+/* Style for bar chart */
+svg {
+  display: flex;
+  border-style: solid;
+  border-color: lightgrey;
+  text-align: center;
+  margin: auto;
+  margin-top: 20px;
+}
+rect:hover{
+  fill: #5686CA;
+}
+/* highlight current page button */
+
+/* Styling for button group */
+.btn-group button {
+  margin-top: 5px;
+  background-color: white; /* Green background */
+  border: 1px solid #dc3265; /* Green border */
+  border-radius: 4px;
+  font-size: 16px;
+  color: black; /* black text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+
+/* Clear floats (clearfix hack) ref: W3Schools */
+.btn-group:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Prevent double borders */
+.btn-group button:not(:last-child) {
+  border-right: none;
+}
+
+/* Add a background color on hover inventory page*/
+.btn-group-inv button:hover {
+  background-color: #dc3265;
+  color: white;
+}
+
+/* Add a background color on hover */
+.btn-group button:hover {
+  background-color: #dc3265;
+  color: white;
+}
+
+/* Style for chart selector */
+.chart-selector {
+  margin-top: 5px;
+}
+/* Style for footer */
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  padding-left: 6px;
+  width: 100%;
+  background-color: #3298dc;
+  color: white;
+  text-align: left;
+  font-size: 8px;
+}
+
+/* Styling for HTML button on home page */
+.HTbutton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: darkblue;
+  color: white;
+  padding: 12px;
+  margin-top: 30px;
+  margin-left: 50px;
+  border: none;
+  cursor: pointer;
+  width: 20%;
+  border-radius: 5px;
+}
+/* colour change button on home page */
+.col-button {
+  display: flex;
+  justify-content: right;
+  align-items: right;
+  background-color: orange;
+  color: white;
+  padding: 12px;
+  margin-top: 30px;
+  margin-left: 50px;
+  border: none;
+  cursor: pointer;
+  width: 10%;
+  border-radius: 5px;
+}
+/* styling for home-page div */
+.home-page {
+  margin-left: 6px;
+}

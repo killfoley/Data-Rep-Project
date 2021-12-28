@@ -1,8 +1,8 @@
 #!flask/bin/python
 
 from flask import Flask, g, jsonify, request, abort, make_response, render_template, session, redirect, url_for
-
-from hardwareDAO import HardwareDAO
+from flask_cors import CORS
+from static.hardwareDAO import HardwareDAO
 import json
 from decimal import Decimal
 
@@ -16,17 +16,18 @@ class DecimalEncoder(json.JSONEncoder):
     return json.JSONEncoder.default(self, obj)
 
 # initiate the Flask server
-app = Flask(__name__, static_url_path='', static_folder='staticpages')
+app = Flask(__name__, static_url_path='', template_folder='staticpages', static_folder='staticpages')
+CORS(app)
 # unsort json. Remove for using with browser.
 # app.config['JSON_SORT_KEYS'] = False
-app.secret_key = 'MySeCrEtKeY987123'
+app.secret_key = 'secret_key'
 
 # How to create a simple Flask login @ https://youtu.be/2Zz97NVbH0U
 # Storing credentials in the server. Would normally use a database table
 
 # Create a user class
 class User:
-    def __init__(self, id, username, password):
+    def __init__(self,id, username, password):
         self.id = id
         self.username = username
         self.password = password
@@ -41,7 +42,7 @@ users.append(User(id=1, username='admin', password='admin'))
 users.append(User(id=2, username='user1', password='password1'))
 users.append(User(id=3, username='user2', password='password2'))
 
-# Used for sessions
+# check before_request app route
 @app.before_request
 def before_request():
     g.user = None
@@ -50,50 +51,56 @@ def before_request():
         user = [x for x in users if x.id == session['user_id']][0]
         g.user = user
 
+
 # Login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         session.pop('user_id', None)
 
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form['username'].strip()
+        password = request.form['password'].strip()
         
         user = [x for x in users if x.username == username][0]
         if user and user.password == password:
             session['user_id'] = user.id
-            return redirect(url_for('inventory'))
+            return redirect(url_for('home'))
 
         return redirect(url_for('login'))
 
     return render_template('login.html')
 
-# App for home redirect
-@app.route('/inventory')
+# app route for home page
+@app.route('/home', methods=['GET', 'POST'])
 def home():
     if not g.user:
         return redirect(url_for('login'))
 
-    return render_template('inventory.html')
+    return render_template('home.html')
 
+# app route for logout
+@app.route('/logout')
+def logout():
+    session.pop('user_id',None)
+    return redirect(url_for('login'))
 
 # get all stock entries
 # curl http://127.0.0.1:5000/stock
-@app.route('/stock')
+@app.route('/inventory')
 def getAll():
-    #if not 'username' in session:
-    #    abort(401)
+    if not 'user_id' in session:
+        abort(401)
 
     results = HardwareDAO.getAll()
     return jsonify(results)
 
 
 # find by Id
-# curl http://127.0.0.1:5000/stock/3
-@app.route('/stock/<int:id>')
+# curl http://localhost:5000/inventory/3
+@app.route('/inventory/<int:id>')
 def findById(id):
-    #if not 'username' in session:
-    #    abort(401)
+    if not 'user_id' in session:
+        abort(401)
 
     stockResult = HardwareDAO.findByID(id)
 
@@ -110,9 +117,9 @@ def findById(id):
 # curl -i -H "Content-Type:application/json" -X POST -d '{"name":"Pliers 3 piece","manufacturer":"Magnusson","supplier":"Screwfix","safetystock":5, "currentstock":8, "costprice":12.50, "sellprice":16.45}' http://localhost:5000/stock
 # for Windows
 # curl -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"Pliers 3 piece\",\"manufacturer\":\"Magnusson\",\"supplier\":\"Screwfix\",\"safetystock\":5, \"currentstock\":8, \"costprice\":12.50, \"sellprice\":16.45}" http://localhost:5000/stock
-@app.route('/stock', methods=['POST'])
+@app.route('/inventory', methods=['POST'])
 def create():
-    if not 'username' in session:
+    if not 'user_id' in session:
         abort(401)
 
     # check if exists
@@ -144,9 +151,9 @@ def create():
 # curl -i -H "Content-Type:application/json" -X PUT -d '{"name":"M8x25mm countersunk screw 50 pack","manufacturer":"Easyfix","supplier":"Screwfix","safetystock":50, "currentstock":80, "costprice":6.00, "sellprice":8.95, "ProdId":4}' http://localhost:5000/stock/4
 # for Windows
 # curl -i -H "Content-Type:application/json" -X PUT -d "{\"name\":\"M8x25mm countersunk screw 50 pack\",\"manufacturer\":\"Easyfix\",\"supplier\":\"Screwfix\",\"safetystock\":50, \"currentstock\":80, \"costprice\":6.00, \"sellprice\":8.95, \"ProdId\":4}" http://localhost:5000/stock/4
-@app.route('/stock/<int:id>', methods=['PUT'])
+@app.route('/inventory/<int:id>', methods=['PUT'])
 def update(id):
-    if not 'username' in session:
+    if not 'user_id' in session:
         abort(401)
 
     returnedProduct = HardwareDAO.findByID(id)
@@ -196,10 +203,10 @@ def update(id):
 
 # Delete
 # curl -
-@app.route('/stock/<int:id>', methods=['DELETE'])
+@app.route('/inventory/<int:id>', methods=['DELETE'])
 def deleteStockItem(id):
-    #if not 'username' in session:
-    #    abort(401)
+    if not 'user_id' in session:
+        abort(401)
 
     returnedProduct = HardwareDAO.findByID(id)
     if not returnedProduct:

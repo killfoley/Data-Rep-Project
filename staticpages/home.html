@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link href="style_sheet.css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <title>Inventory Management Home</title>
+
+  </head>
+  <body>
+    <!-- Header -->
+    <div class="header">
+      <img src="logo.svg" alt="logo" class="logo" align="left" width="300px">
+        <h1>Inventory Management System</h1>
+    </div>
+    <!-- button group -->
+      <div class="btn-group" style="width:100%">
+        <a href="inventory.html"><button style="width:33%">Inventory & Stock</button></a>
+        <a href="login"><button style="width:33%">Login</button></a>
+        <a href="logout"><button style="width:33%">Logout</button></a>
+      </div>
+<div class="home-page">
+  <p id="newCol">Welcome back {{g.user.username}}! Click above to check the Inventory Management System</p>
+</div>
+
+  </body>
+  <!-- Footer section -->
+  <div class="footer">
+    <p>© Killian Foley</p>
+  </div>
+</html>
+<script type="text/javascript">
+
+// function to display the current date on the screen
+function changeHTML(){
+var today = new Date();
+document.getElementById("domenstration").innerHTML = today.toLocaleDateString();
+}
+
+function changeCol(){
+  document.getElementById("newCol").style.background = "blue";
+}
+
+</script>

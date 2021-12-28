@@ -1,5 +1,5 @@
 import mysql.connector
-import dbconfig as cfg
+import static.dbconfig as cfg
 from decimal import Decimal
 
 # Create a Database Access Object Class
