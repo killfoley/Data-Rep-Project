@@ -19,7 +19,7 @@ class HardwareDAO:
             password=cfg.mysql['password'],
             database=cfg.mysql['database'],
             pool_name='my_connection_pool',
-            pool_size=5
+            pool_size=3
         )
         return self.db
 
