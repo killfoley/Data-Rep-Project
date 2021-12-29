@@ -14,9 +14,9 @@
         <div><h1>Inventory Management System</h1></div>
     </div>
     <!-- button group -->
-    <div class="btn-group-inv" style="width:50%">
-      <a href="home"><button class="button" style="width:25%">Home</button></a>
-      <a href="logout"><button class="button" style="width:25%">Logout</button></a>
+    <div class="top-nav-right">
+      <a href="home">Home</a>
+      <a href="logout">Logout</a>
     </div>
     <div class="createbuttontext">
     <p>Create a new product in the inventory system</p>
@@ -237,7 +237,7 @@
         var product = {}
         product.id = form.querySelector('input[name="id"]').value
         product.name = form.querySelector('input[name="name"]').value
-        product.manufacturer = form.querySelector('input[name="manufacturer"]').valuec
+        product.manufacturer = form.querySelector('input[name="manufacturer"]').value
         product.supplier = form.querySelector('input[name="supplier"]').value
         product.safetystock = parseInt(form.querySelector('input[name="safetystock"]').value,10)
         product.currentstock = parseInt(form.querySelector('input[name="currentstock"]').value,10)
@@ -247,9 +247,11 @@
         return product
     }
 
+// Ajax Calls
+host = window.location.origin
     function getAllAjax(){
         $.ajax({
-            "url": "http://localhost:5000/inventory",
+            "url": host + "/inventory",
             "method":"GET",
             "data":"",
             "dataType": "JSON",
@@ -270,7 +272,7 @@
         //var car = {"reg":"12 D 1234","make":"Fiat","model":"Punto","price":3000}
         console.log(JSON.stringify(product));
         $.ajax({
-            "url": "http://localhost:5000/inventory",
+            "url": host + "/inventory",
             "method":"POST",
             "data":JSON.stringify(product),
             "dataType": "JSON",
@@ -291,7 +293,7 @@
         //var product = {""}
         console.log(JSON.stringify(product));
         $.ajax({
-            "url": "http://localhost:5000/inventory/"+encodeURI(product.id),
+            "url": host + "/inventory/"+encodeURI(product.id),
             "method":"PUT",
             "data":JSON.stringify(product),
             "dataType": "JSON",
@@ -310,7 +312,7 @@
         
         //console.log(JSON.stringify('deleting '+id));
         $.ajax({
-            "url": "http://localhost:5000/inventory/"+encodeURI(id),
+            "url": host + "/inventory/"+encodeURI(id),
             "method":"DELETE",
             "data":"",
             "dataType": "JSON",

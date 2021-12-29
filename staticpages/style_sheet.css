@@ -31,18 +31,9 @@
   margin-left: 20px;
 }
 /* button group inventory page*/
-.btn-group-inv button{
-  margin-top: 1px;
-  background-color: #dc3265; 
-  border: 1px solid black; 
-  border-radius: 4px;
-  font-size: 16px;
-  color: black; 
-  padding: 2px 2px; 
-  cursor: pointer; 
-  position: absolute;
-  right: 5px;
-  top: 5px;
+.top-nav-right{
+  float: right;
+  margin-right: 10px;
 }
 
 /* Set a style for create button style create button inventory.html */
