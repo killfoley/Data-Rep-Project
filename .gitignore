@@ -3,8 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-#venv
-venv/
+# db config
+*dbconfig.py
 
 # C extensions
 *.so
