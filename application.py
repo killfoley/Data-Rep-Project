@@ -85,7 +85,7 @@ def logout():
     return redirect(url_for('login'))
 
 # get all stock entries
-# curl http://127.0.0.1:5000/stock
+# curl http://127.0.0.1:5000/inventory
 @app.route('/inventory')
 def getAll():
     if not 'user_id' in session:
@@ -114,9 +114,9 @@ def findById(id):
 
 # Create new stock item
 # for Mac
-# curl -i -H "Content-Type:application/json" -X POST -d '{"name":"Pliers 3 piece","manufacturer":"Magnusson","supplier":"Screwfix","safetystock":5, "currentstock":8, "costprice":12.50, "sellprice":16.45}' http://localhost:5000/stock
+# curl -i -H "Content-Type:application/json" -X POST -d '{"name":"Pliers 3 piece","manufacturer":"Magnusson","supplier":"Screwfix","safetystock":5, "currentstock":8, "costprice":12.50, "sellprice":16.45}' http://localhost:5000/inventory
 # for Windows
-# curl -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"Pliers 3 piece\",\"manufacturer\":\"Magnusson\",\"supplier\":\"Screwfix\",\"safetystock\":5, \"currentstock\":8, \"costprice\":12.50, \"sellprice\":16.45}" http://localhost:5000/stock
+# curl -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"Pliers 3 piece\",\"manufacturer\":\"Magnusson\",\"supplier\":\"Screwfix\",\"safetystock\":5, \"currentstock\":8, \"costprice\":12.50, \"sellprice\":16.45}" http://localhost:5000/inventory
 @app.route('/inventory', methods=['POST'])
 def create():
     if not 'user_id' in session:
@@ -148,9 +148,9 @@ def create():
 
 # App to update a stock item
 # for Mac
-# curl -i -H "Content-Type:application/json" -X PUT -d '{"name":"M8x25mm countersunk screw 50 pack","manufacturer":"Easyfix","supplier":"Screwfix","safetystock":50, "currentstock":80, "costprice":6.00, "sellprice":8.95, "ProdId":4}' http://localhost:5000/stock/4
+# curl -i -H "Content-Type:application/json" -X PUT -d '{"name":"M8x25mm countersunk screw 50 pack","manufacturer":"Easyfix","supplier":"Screwfix","safetystock":50, "currentstock":80, "costprice":6.00, "sellprice":8.95, "ProdId":4}' http://localhost:5000/inventory/4
 # for Windows
-# curl -i -H "Content-Type:application/json" -X PUT -d "{\"name\":\"M8x25mm countersunk screw 50 pack\",\"manufacturer\":\"Easyfix\",\"supplier\":\"Screwfix\",\"safetystock\":50, \"currentstock\":80, \"costprice\":6.00, \"sellprice\":8.95, \"ProdId\":4}" http://localhost:5000/stock/4
+# curl -i -H "Content-Type:application/json" -X PUT -d "{\"name\":\"M8x25mm countersunk screw 50 pack\",\"manufacturer\":\"Easyfix\",\"supplier\":\"Screwfix\",\"safetystock\":50, \"currentstock\":80, \"costprice\":6.00, \"sellprice\":8.95, \"ProdId\":4}" http://localhost:5000/inventory/4
 @app.route('/inventory/<int:id>', methods=['PUT'])
 def update(id):
     if not 'user_id' in session:
