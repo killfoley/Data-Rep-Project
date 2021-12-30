@@ -43,20 +43,42 @@
       </table>
     </div>
 <div id="createUpdateForm" style="display: none">
-  <form>
-    <div class="form-group">
+  <form class="form-group">
       <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update</span> Stock Item</h2>
-      <input type="hidden" name="id"/>
-      Name <input type="text" class="col-auto" name="name"><br>
-      Manufacturer <input type="text" class="col-auto" name="manufacturer"><br>
-      Supplier <input type="text" class="col-auto" name="supplier"><br>
-      Safety Stock <input type="number" class="col-auto" name="safetystock"><br>
-      Current Stock <input type="number" class="col-auto" name="currentstock"><br>
-      Cost Price <input type="number" class="col-auto" name="costprice"><br>
-      Sell Price <input type="number" class="col-auto" name="sellprice"><br>
+      <table class="create-update">
+        <input type="hidden" name="id"/>
+      <tr>
+        <th>Name: </th>
+        <td><input type="text" name="name"><br></td>
+      </tr>
+      <tr>
+        <th>Manufacturer: </th>
+        <td><input type="text" name="manufacturer"></td>
+      </tr>
+      <tr>
+        <th>Supplier: </th>
+        <td><input type="text" name="supplier"></td>
+      </tr>
+      <tr>
+        <th>Safety Stock: </th>
+        <td><input type="number" name="safetystock"></td>
+      </tr>
+      <tr>
+        <th>Current Stock: </th>
+        <td><input type="number" name="currentstock"></td>
+      </tr>
+      <tr>
+        <th>Cost Price:</th>
+        <td><input type="number" name="costprice"></td>
+      </tr>
+      <tr>
+        <th>Sell Price: </th>
+        <td><input type="number" name="sellprice"></td>
+      </tr>
+    </table>
       <span><button type="button" name="Create" id="doCreateButton" onclick="doCreate()">Create</button></span>
-      <span><button type="button" name="Update" id="doUpdateButton" onclick="doUpdate()">Update</button></span>
-      </div>
+      <span><button name="Update" id="doUpdateButton" onclick="doUpdate()">Update</button></span>
+    </table>
     </form>
     </div>
   </body>

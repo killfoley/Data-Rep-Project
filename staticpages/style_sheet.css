@@ -36,6 +36,24 @@
   margin-right: 10px;
 }
 
+.create-update table{
+  border-spacing: 5px;
+}
+
+/* move form group in from left*/
+.form-group{
+  margin-left: 20px;
+  padding: 2px;
+}
+/* move form group in from left*/
+#doCreateButton{
+  margin-top: 20px;
+}
+/* move form group in from left*/
+#doUpdateButton{
+  margin-top: 20px;
+}
+
 /* Set a style for create button style create button inventory.html */
 .createbutton{
   display: flex;
