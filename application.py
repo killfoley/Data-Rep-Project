@@ -216,10 +216,11 @@ def deleteStockItem(id):
     return jsonify({"done": True})
 
 
-# Getting static pages
-@app.route('/about')
-def about():
-    return render_template('about.html')
+# app to just check the stock without login details.
+@app.route('/stockcheck')
+def getAllnoLogin():
+    results = HardwareDAO.getAll()
+    return jsonify(results)
 
 
 # Error handling 

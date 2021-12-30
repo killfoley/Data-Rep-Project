@@ -20,7 +20,11 @@
         <a href="logout"><button style="width:33%">Logout</button></a>
       </div>
 <div class="home-page">
-  <p id="newCol">Welcome back {{g.user.username}}! Click above to check the Inventory Management System</p>
+  <p id="newCol">Welcome back {{g.user.username}}! Click "Inventory & Stock" above to check the Inventory Management System</p>
+  <p>This Inventory Management Ststem is an example of creating and consuming RESTful APIs. The web application links to the Product
+    and Price tables in the MySQL database either hosted locally or on Python Anywhere depending on where you are accessing it from.
+    You are able to Create, Update and Delete stocked items in the database via the web application. Enjoy!!
+  </p>
 </div>
 
   </body>
@@ -31,14 +35,21 @@
 </html>
 <script type="text/javascript">
 
-// function to display the current date on the screen
-function changeHTML(){
-var today = new Date();
-document.getElementById("domenstration").innerHTML = today.toLocaleDateString();
+navigator.geolocation.getCurrentPosition(callback);
+
+function getLocation(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(getWeather);
+    }else{
+        alert("Geolocation not supported by this browser");
+    }
 }
 
-function changeCol(){
-  document.getElementById("newCol").style.background = "blue";
+function getWeather(position){
+    let lat = position.coords.latitude;
+    let long = position.coords.longitude;
+    let API_KEY = " ";
+    let baseURL = `http://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&appid=${API_KEY}`;
 }
 
 </script>

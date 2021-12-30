@@ -36,6 +36,11 @@
   margin-right: 10px;
 }
 
+/* move CSV button in from left*/
+.csv-button{
+  margin-left: 20px;
+}
+
 .create-update table{
   border-spacing: 5px;
 }
