@@ -60,6 +60,7 @@
 </html>
 <script type="text/javascript">
 
+// function to populate rates to the table
 function AddRatesToTable(result){
   document.getElementById("FXTable").rows[0].cells[1].innerHTML = result["rates"]["USD"]
   document.getElementById("FXTable").rows[1].cells[1].innerHTML = result["rates"]["AUD"]
@@ -67,6 +68,8 @@ function AddRatesToTable(result){
   document.getElementById("FXTable").rows[3].cells[1].innerHTML = result["rates"]["GBP"]
 }
 
+// Ajax function to get the API response
+// license only permits 1000 calls a quarter
 function getFXrate(){
         $.ajax({
             "url": "http://api.exchangeratesapi.io/v1/latest?access_key=2a3c61b2abd0b89dcf860ee0bf40ad53&symbols=USD,AUD,CAD,GBP&format=1",

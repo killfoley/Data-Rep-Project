@@ -19,6 +19,18 @@ mysql> source /path/to/file/init.sql;
 ```
 * Note the path to the file must be correct. If there are too many escape characters it might fail so it might be best to move the file to the desktop if there are any issues
 
+### Creating a dbconfig.py File
+* In order to connect to the databse the HardwareDAO file needs database credentials.
+* Create a `dbconfig.py` file and add it to the `static` folder
+* The file will look like below  
+```python
+    mysql={
+    'host':"enter db host here",
+    'username':'enter db username here',
+    'password':'enter password here',
+    'database': 'datarepproject'
+    }
+```
 ### Setting Up A Virtual Environment
 * Using a virtual environment is a good idea so as not to disrupt your current system configuration.
 * To do this run `pip install virtualenv` virtualenv package will download
