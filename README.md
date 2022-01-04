@@ -76,6 +76,13 @@ or via curl
 ```bash
 curl https://killfoley.pythonanywhere.com/stockcheck
 ```
+#### Note
+Pythonanywhere does not allow connection to API by default as it is http not https.
+* Click the lock icon to the left of the address bar. A dropdown will appear.
+![](/misc/site-settings.png)
+* Select site settings and allow insecure content
+* This is only required for pythonanywhere.
+
 ###### Submitted for marking by
 Killian Foley<br>
 G00387875<br>
