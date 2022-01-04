@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <link href="style_sheet.css" rel="stylesheet">
     <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <title>Inventory Management Home</title>
 
   </head>
@@ -27,6 +28,30 @@
   </p>
 </div>
 
+<div>
+  <div>
+    <button onclick="getFXrate()">Click For Latest FX Rates</button>
+    <table id='FXTable'>
+      <h3>EUR=</h3>
+    <tr>
+      <th>USD</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>AUD</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>CAD</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>GBP</th>
+      <td></td>
+    </tr>
+  </table>
+  </div>
+</div>
   </body>
   <!-- Footer section -->
   <div class="footer">
@@ -35,21 +60,33 @@
 </html>
 <script type="text/javascript">
 
-navigator.geolocation.getCurrentPosition(callback);
+function AddRatesToTable(result){
+  document.getElementById("FXTable").rows[0].cells[1].innerHTML = result["rates"]["USD"]
+  document.getElementById("FXTable").rows[1].cells[1].innerHTML = result["rates"]["AUD"]
+  document.getElementById("FXTable").rows[2].cells[1].innerHTML = result["rates"]["CAD"]
+  document.getElementById("FXTable").rows[3].cells[1].innerHTML = result["rates"]["GBP"]
+}
 
-function getLocation(){
-    if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(getWeather);
-    }else{
-        alert("Geolocation not supported by this browser");
+function getFXrate(){
+        $.ajax({
+            "url": "http://api.exchangeratesapi.io/v1/latest?access_key=2a3c61b2abd0b89dcf860ee0bf40ad53&symbols=USD,AUD,CAD,GBP&format=1",
+            "method":"GET",
+            "data":"",
+            "dataType": "JSON",
+            "success":function(result){
+                console.log(result);
+                AddRatesToTable(result);
+                console.log(result["rates"]["USD"]);
+                //for (product of result){
+                 //   addProductToTable(product);
+                //}
+                
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+
     }
-}
-
-function getWeather(position){
-    let lat = position.coords.latitude;
-    let long = position.coords.longitude;
-    let API_KEY = " ";
-    let baseURL = `http://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&appid=${API_KEY}`;
-}
 
 </script>
