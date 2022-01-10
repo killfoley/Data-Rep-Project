@@ -143,6 +143,7 @@
       var rowElement = document.getElementById(product.id);
       updateProductAjax(product);
       setProductInRow(rowElement,product);
+      console.log(product);
 
       clearForm()
       showViewAll()
@@ -227,11 +228,12 @@
         product.name = rowElement.cells[1].firstChild.textContent
         product.manufacturer = rowElement.cells[2].firstChild.textContent
         product.supplier = rowElement.cells[3].firstChild.textContent
-        product.safetystock = parseInt(rowElement.cells[4].firstChild.textContent,10)
-        product.currentstock = parseInt(rowElement.cells[5].firstChild.textContent,10)
-        product.costprice = parseFloat(rowElement.cells[6].firstChild.textContent)
-        product.sellprice = parseFloat(rowElement.cells[7].firstChild.textContent)
+        product.safetystock = parseInt(rowElement.cells[4].firstChild.textContent, 10)
+        product.currentstock = parseInt(rowElement.cells[5].firstChild.textContent, 10)
+        product.costprice = parseFloat(rowElement.cells[6].firstChild.textContent, 10)
+        product.sellprice = parseFloat(rowElement.cells[7].firstChild.textContent, 2)
         return product
+        console.log(product)
     }
 
     function setProductInRow(rowElement, product){
@@ -392,7 +394,7 @@ host = window.location.origin
             "dataType": "JSON",
             contentType: "application/json; charset=utf-8",
             "success":function(result){
-               // console.log(result);
+               console.log(result);
                   
             },
             "error":function(xhr,status,error){

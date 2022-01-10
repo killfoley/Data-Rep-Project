@@ -186,10 +186,14 @@ def update(id):
         returnedProduct['Manufacturer'] = reqJson['manufacturer']
     if 'supplier' in request.json:
         returnedProduct['Supplier'] = reqJson['supplier']
-    if 'safety_stock' in request.json:
-        returnedProduct['SafetyStock'] = reqJson['safety_stock']
-    if 'CurrentStock' in request.json:
-        returnedProduct['CurrentStock'] = reqJson['CurrentStock']
+    if 'safetystock' in request.json:
+        returnedProduct['SafetyStock'] = reqJson['safetystock']
+    if 'currentstock' in request.json:
+        returnedProduct['CurrentStock'] = reqJson['currentstock']
+    if 'costprice' in request.json:
+        returnedProduct['CostPrice'] = reqJson['costprice']
+    if 'sellprice' in request.json:
+        returnedProduct['SellPrice'] = reqJson['sellprice']
 
     # Make the tuple for DB
     values = (returnedProduct["Name"],returnedProduct["Manufacturer"],
